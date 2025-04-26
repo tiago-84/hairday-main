@@ -1,10 +1,18 @@
-if (req.method === 'POST') {
-  const { id, name, when } = req.body;
+export async function scheduleNew({ id, name, when }) {
+  try {
+    const response = await fetch('/api/schedules', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({ id, name, when }),
+    });
 
-  const { data, error } = await supabase
-    .from('schedules')
-    .insert([{ id, name, when }]);
+    if (!response.ok) throw new Error('Erro ao agendar');
 
-  if (error) return res.status(500).json({ error: error.message });
-  return res.status(201).json(data);
+    alert('Agendamento realizado com sucesso!');
+  } catch (error) {
+    console.error(error);
+    alert('Não foi possível agendar. Tente novamente mais tarde.');
+  }
 }
